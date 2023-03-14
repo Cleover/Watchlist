@@ -1,0 +1,1 @@
+# Simple discord bot to watch new users activity for 7 days after joining.
