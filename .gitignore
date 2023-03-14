@@ -5,3 +5,4 @@
 .yarnrc.yml
 /.vscode
 yarn.lock
+package-lock.json

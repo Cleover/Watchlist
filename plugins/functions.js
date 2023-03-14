@@ -6,38 +6,28 @@ const {
 } = require("discord.js");
 
 module.exports = (client) => {
-  client.output = (reason, details, color, ids, jump = false) => {
+  client.output = async (user, message) => {
     const channel = client.channels.cache.get(client.config.watchlist.output);
-    const embed = new EmbedBuilder()
-      .setTitle(reason)
-      .setColor(color)
-      .setDescription(
-        `**Details:**\`\`\`${details}\`\`\`\nIDs:\`\`\`${Object.entries(ids)
-          .map(([key, value]) => `${key} = ${value}`)
-          .join("\n")}\`\`\``
-      )
-      .setTimestamp()
-      .setFooter({
-        text: `Watchlist | ${client.user.username}`,
-        iconUrl: client.user.avatarURL(),
+
+    let webhooks = await channel.fetchWebhooks();
+    let webhook = webhooks.first();
+    
+    if (!webhook) {
+      webhook = await channel.createWebhook({
+        name: 'Watchlist Proxy',
+        reason: 'Watchlist Proxy'
       });
+    }
 
-    const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId("messageLink")
-        .setLabel("Jump to Message")
-        .setStyle(ButtonStyle.Link)
-        .setDisabled(!jump)
-        .setURL(jump)
-    );
-
-    channel.send({
-      embeds: [embed],
-      components: [row],
+    await webhook.send({
+      username: user.tag,
+      avatarURL: user.avatarURL(),
+      content: message,
     });
+    
   };
 
-  client.checkUserWatchlist = (userID) => {
+  client.checkUserWatchlist = async (userID) => {
     const guild = client.guilds.cache.get(client.config.watchlist.guild);
     if (!guild)
       return console.log(
@@ -46,9 +36,17 @@ module.exports = (client) => {
     guild.members
       .fetch(userID)
       .then((member) => {
-        if (member.roles.cache.has(client.config.watchlist.role)) return true;
+        if (member.roles.cache.has(client.config.watchlist.role)) hasRole = true;
+        return hasRole;
       })
-      .catch(console.error);
-    return false;
+      .catch((err) => {
+        return false
+      });
   };
+
+  client.escape = (text) => {
+    var unescaped = text.replace(/\\(\*|_|`|~|\\)/g, '$1'); // unescape any "backslashed" character
+    var escaped = unescaped.replace(/(\*|_|`|~|\\)/g, '\\$1'); // escape *, _, `, ~, \
+    return escaped;
+ }; 
 };

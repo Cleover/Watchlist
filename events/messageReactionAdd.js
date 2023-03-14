@@ -3,5 +3,8 @@ module.exports = async (client, messageReaction, user) => {
 
     if(!client.checkUserWatchlist(user.id)) return;
 
-    client.output("Message Reacted On", `Message reacted on by a user with the newby role\nMessage Reacted To:\n${messageReaction.message.content}\nReaction:\n${messageReaction.emoji}`, 0x91e386, {User: user.id}, messageReaction.message.url);
+    if(!messageReaction.message.content) messageReaction.message.content = "No Content (Likely an image/embed)"
+
+    client.output(user, `\`[Reacted To]\` [[Jump]](${messageReaction.message.url})\n${client.escape(messageReaction.message.content.split("\n").map(line => `> ${line}`).join("\n"))}\n\`[With]\`\n> ${messageReaction.emoji}\n`)
+
 }

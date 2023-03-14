@@ -3,5 +3,9 @@ module.exports = async (client, message) => {
 
     if(!client.checkUserWatchlist(message.author.id)) return;
 
-    client.output("Message Deleted", `Message deleted by a user with the newby role\nMessage:\n${message.content}`, 0xa83232, {User: message.author.id});
+    if(!message.content) message.content = "No Content (Likely an image/embed)"
+
+    const images = message.attachments.map(attachment => `<${attachment.url}>`) || []
+
+    client.output(message.author, `\`[Deleted]\`\n>>> ${client.escape(message.content.split("\n").map(line => `> ${line}`).join("\n"))}\n${images.length > 0 ? "***Images:***\n" + images.join(", ") : ""}`)
 }

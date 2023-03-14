@@ -14,7 +14,9 @@ const client = new Client({
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.GuildMessageReactions,
-    ]
+        GatewayIntentBits.MessageContent,
+    ],
+    partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
 var colors = require('colors');
