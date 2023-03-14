@@ -1,6 +1,7 @@
 module.exports = async (client, message) => {
     if(message.author.bot) return;
-    if(!client.checkUserWatchlist(message.author.id)) return;
+
+    if(!await client.checkUserWatchlist(message.author.id)) return;
 
     if(message.channel.id == client.config.watchlist.blocked) {
         client.output(message.author, `\`[Message Blocked By AutoMod]\` [[Jump]](${message.url})\n${client.escape(message.embeds[0].description.split("\n").map(line => `> ${line}`).join("\n"))}`)

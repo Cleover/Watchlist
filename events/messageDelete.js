@@ -1,7 +1,7 @@
 module.exports = async (client, message) => {
     if(message.author.bot) return;
 
-    if(!client.checkUserWatchlist(message.author.id)) return;
+    if(!await client.checkUserWatchlist(message.author.id)) return;
 
     if(!message.content) message.content = "No Content (Likely an image/embed)"
 

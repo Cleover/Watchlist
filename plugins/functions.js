@@ -11,11 +11,11 @@ module.exports = (client) => {
 
     let webhooks = await channel.fetchWebhooks();
     let webhook = webhooks.first();
-    
+
     if (!webhook) {
       webhook = await channel.createWebhook({
-        name: 'Watchlist Proxy',
-        reason: 'Watchlist Proxy'
+        name: "Watchlist Proxy",
+        reason: "Watchlist Proxy",
       });
     }
 
@@ -24,7 +24,6 @@ module.exports = (client) => {
       avatarURL: user.avatarURL(),
       content: message,
     });
-    
   };
 
   client.checkUserWatchlist = async (userID) => {
@@ -33,20 +32,17 @@ module.exports = (client) => {
       return console.log(
         `Can't find the guild with ID ${client.config.watchlist.guild}`
       );
-    guild.members
-      .fetch(userID)
-      .then((member) => {
-        if (member.roles.cache.has(client.config.watchlist.role)) hasRole = true;
-        return hasRole;
-      })
-      .catch((err) => {
-        return false
-      });
+
+    let member = await guild.members.fetch(userID);
+
+    if (!member) return false;
+
+    return member.roles.cache.has(client.config.watchlist.role);
   };
 
   client.escape = (text) => {
-    var unescaped = text.replace(/\\(\*|_|`|~|\\)/g, '$1'); // unescape any "backslashed" character
-    var escaped = unescaped.replace(/(\*|_|`|~|\\)/g, '\\$1'); // escape *, _, `, ~, \
+    var unescaped = text.replace(/\\(\*|_|`|~|\\)/g, "$1"); // unescape any "backslashed" character
+    var escaped = unescaped.replace(/(\*|_|`|~|\\)/g, "\\$1"); // escape *, _, `, ~, \
     return escaped;
- }; 
+  };
 };
